@@ -10,13 +10,15 @@
 - [Contact](#contact)
 - [Architecture](#architecture)
 - [Getting Started](#getting-started)
+  - [Prerequisites](#prerequisites)
+  - [Installation](#installation)
 - [Configuration](#configuration)
 - [Endpoints](#endpoints)
-- [Dependencies](#dependencies)
 - [Running Tests](#running-tests)
+  - [Unit Tests](#unit-tests)
+  - [Integration Tests](#integration-tests)
 - [Deployment](#deployment)
-- [Monitoring and Logging](#monitoring-and-logging)
-- [Troubleshooting](#troubleshooting)
+- [Monitoring,Logging, Troubleshooting](#monitoring-and-logging)
 - [Contributing](#contributing)
 
 ## Contact
@@ -34,11 +36,13 @@
 
 ### Prerequisites
 
-[List any prerequisites needed to run the microservice, such as software dependencies, environment setup, etc.]
+[List all prerequisites needed to run the microservice, such as software dependencies, environment setup, etc.]
 
 ### Installation
 
 [Provide step-by-step instructions on how to install and set up the microservice locally.]
+
+[This section can contain a number of subsections to accommodate different installation methods, such as Gradle, Docker, etc.]
 
 ```bash
 # Example commands
@@ -85,7 +89,11 @@ gradlew test
 
 [Monitoring, Logging, and Troubleshooting](./docs/ops.md)
 
+## Contributing
 
+[A description of the coding conventions, guidelines, and the process for submitting pull requests to the project.]
+
+[Note: This section may contain just links to other documents cover the topics mentioned above.]
 
 
 
