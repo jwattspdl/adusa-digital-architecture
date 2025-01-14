@@ -94,17 +94,18 @@ and after release, they should be removed.]
 - Expected response time
 - Expected error rate
 
-
 ## Monitoring/Logs
 
 [This section may include:]
+- Links to Datadog dashboards, service pages, or other monitoring tools that are used to monitor the service.
+  - If you do include links to Datadog or other monitoring tool, please group the links out by environment
 - All synthetic monitoring that should be done for the service.
     - Note, this doesn't need to include links to specific monitoring tools for an environment, but it should include
       what should be monitored and why.
 - Any specific logs messages or patterns of log messages that are used for error detection and altering
 
 
-### Troubleshooting
+### Troubleshooting (optional)
 
 [The devs should use this section to log issues that have arisen and how they were resolved. This will help the SRE
 team to build a playbook for the service.]

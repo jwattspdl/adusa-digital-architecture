@@ -3,6 +3,8 @@
 [High-level description of the service's architecture.]
 
 ## TOC
+- [Technologies](#technologies)
+- [Data](#data)
 - [Dependencies](#dependencies)
   - [Dependency](#dependency)
 - [Clients](#clients)
@@ -10,6 +12,61 @@
 - Flows
   - [Flow](#flow) 
 - [Decisions](#decisions)   
+
+### Technologies
+
+[This section should contain a list of the technologies used in the service, e.g., Spring Boot, Kotlin, Hazelcast, etc.]
+
+### Data (optional)
+
+[This section should contain a description of the data model used in the service, e.g., ERD, UML, etc.]
+[Questions to answer]
+- What data does this service store and why?
+- What are the relationships between the data elements?
+- Any notes on data storage, e.g., encryption, hashing, etc.
+- Any use of data caching or data replication?
+- Any use of data partitioning or sharding?
+- Any use of data archiving or data purging?
+- Any dependence on data import jobs, triggers, or stored procedures?
+
+```mermaid
+---
+title: Customer example
+---
+erDiagram
+    CUSTOMER ||--o{ PREFERENCES : has
+    CUSTOMER ||--o{ DELIVERY_ADDRESS : has
+    CUSTOMER ||..o{ ATTRIBUTE : has
+
+    CUSTOMER {
+        bigint id 
+        string handle UK  "Must be email address"
+        string email UK "Must be unique. Typically same as handle. Legacy Peapod customer excepting" 
+        string loyaltyCard UK "Opco Loyalty Card - Can only belong to one web customer account" 
+        string type "M - Merchant, C- Customer" 
+    }
+    PREFERENCES {
+        string id
+        string customerId
+        string preference
+    }
+    DELIVERY_ADDRESS {
+        string id
+        string customerId
+        string address
+    } 
+```
+
+### Security
+
+[This section should contain a description of the security model used in the service, e.g., OAuth2, JWT, etc.]
+[Questions to answer:]
+1. Does this service have any security requirements?
+2. Does this data use encryption at rest or in transit?
+3. Deos this service store PII or PCI data?
+   a. If so, how is it protected?
+   b. Links to the data protection policy? 
+
 
 ## Dependencies
 

@@ -2,7 +2,11 @@
 
 ## Overview
 
-[Provide a brief description of the microservice, its purpose, and its main functionalities.]
+[Provide a brief description of the microservice.]
+[This description must include]
+[1. The microservice's purpose]
+[2. The microservice's main functionalities]
+[3. The OpCo or OpCos for which the microservice is intended, (Typically, this is all OpCos as the microservice is intended to be shared across the enterprise.)]
 
 ## Table of Contents
 
@@ -24,6 +28,13 @@
 ## Contact
 
 [List of the team(s) responsible for ownership of the project and management of the project]
+[This section should include the following information:]
+1. The team's name
+2. The team's email address
+3. The team's Slack channel
+4. The team's Jira project
+
+[Note: A link to page(s) containing the above information is also acceptable.]
 
 ## Architecture
 
