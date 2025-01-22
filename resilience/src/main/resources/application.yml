@@ -1,0 +1,39 @@
+product-index:
+  url: ${PRODUCT_INDEX_URL}
+
+management:
+  health:
+    circuitbreakers:
+      enabled: true
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,circuitbreakers
+
+
+# Documentation on available circuit-breaker settings can be found https://resilience4j.readme.io/docs/circuitbreaker
+resilience4j:
+  circuitbreaker:
+    configs:
+      default:
+        registerHealthIndicator: true
+    instances:
+      productApi:
+        slidingWindowType: ${PRODUCT_API_SLIDING_WINDOW_TYPE:COUNT_BASED}
+        slidingWindowSize: ${PRODUCT_API_SLIDING_WINDOW_SIZE:5}
+        minimumNumberOfCalls: ${PRODUCT_API_MINIMUM_NUMBER_OF_CALLS:3}
+        slowCallDurationThreshold: ${PRODUCT_API_SLOW_CALL_DURATION_THRESHOLD:100}
+        slowCallRateThreshold: ${PRODUCT_API_SLOW_CALL_RATE_THRESHOLD:100}
+        permittedNumberOfCallsInHalfOpenState: ${PRODUCT_API_PERMITTED_NUMBER_OF_CALLS_IN_HALF_OPEN_STATE:3}
+        waitDurationInOpenState: ${PRODUCT_API_WAIT_DURATION_IN_OPEN_STATE:1s}
+        failureRateThreshold: ${PRODUCT_API_FAILURE_RATE_THRESHOLD:100}
+        recordExceptions:
+          - java.lang.Exception
+  retry:
+    instances:
+      productApi:
+        maxAttempts: ${PRODUCT_API_MAX_RETRY_ATTEMPTS:2}
+        waitDuration: ${PRODUCT_API_WAIT_DURATION:100ms}
+        fail-after-max-attempts: true
+        retryExceptions:
+          - java.lang.Exception

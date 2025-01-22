@@ -1,0 +1,102 @@
+# Write OpenAPI Specification for Product Search API
+# OpenAPI YAML specification 3.0.0 version
+openapi: 3.1.0
+info:
+  title: Product Search API
+  description: Product Search API for searching products
+  version: 1.0.0
+
+paths:
+  /products/search:
+    post:
+      summary: Search products
+      description: Search products by name, category, and price
+      operationId: searchProducts
+      tags:
+        - ProductSearch
+      requestBody:
+        required: true
+        content:
+            application/json:
+                schema:
+                  $ref: '#/components/schemas/SearchRequest'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SearchResponse'
+        '204':
+            description: Returned if no products found for search criteria
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+
+#components section
+components:
+  schemas:
+    SearchRequest:
+      type: object
+      required:
+        - serviceLocationId
+        - text
+      properties:
+        serviceLocationId:
+            type: string
+            description: The service location id (location and service) in which the search is performed
+        text:
+          type: string
+          description: The free text search query
+        limit:
+          type: integer
+          description: The maximum number of products to return, 10 by default
+          default: 10
+    SearchResponse:
+      type: object
+      required:
+        - products
+        - total
+      properties:
+        total:
+          type: integer
+          description: Total number of products found
+        products:
+          description: List of products for this page
+          type: array
+          items:
+            $ref: '#/components/schemas/Product'
+    Product:
+      type: object
+      properties:
+        id:
+          type: number
+          format: int32
+        name:
+          type: string
+        price:
+          type: number
+          format: float
+    Error:
+      type: object
+      properties:
+        code:
+          type: integer
+        message:
+          type: string

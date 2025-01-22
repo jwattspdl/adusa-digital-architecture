@@ -1,0 +1,158 @@
+buildscript {
+	repositories {
+		mavenCentral()
+	}
+
+	dependencies {
+		classpath "org.openapitools:openapi-generator-gradle-plugin:7.10.0"
+	}
+}
+
+plugins {
+	id 'org.jetbrains.kotlin.jvm' version '1.9.25'
+	id 'org.jetbrains.kotlin.plugin.spring' version '1.9.25'
+	id 'org.springframework.boot' version '3.4.0'
+	id 'io.spring.dependency-management' version '1.1.6'
+}
+
+group = 'com.peapod.example'
+version = '0.0.1-SNAPSHOT'
+
+
+java {
+	toolchain {
+		languageVersion = JavaLanguageVersion.of(17)
+	}
+}
+
+
+repositories {
+	mavenCentral()
+}
+
+sourceSets {
+	main {
+		java {
+			srcDirs += "build/generated/src/main/java"
+			srcDirs += "build/generated/src/main/kotlin"
+		}
+	}
+	intTest {
+		java {
+			compileClasspath += sourceSets.main.output
+			runtimeClasspath += sourceSets.main.output
+		}
+	}
+}
+
+configurations {
+	intTestImplementation.extendsFrom testImplementation
+	intTestRuntimeOnly.extendsFrom testRuntimeOnly
+}
+
+ext {
+	set('springCloudVersion', "2024.0.0")
+}
+
+dependencies {
+	implementation 'org.springframework.boot:spring-boot-starter-actuator'
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation 'com.fasterxml.jackson.module:jackson-module-kotlin'
+	implementation 'org.jetbrains.kotlin:kotlin-reflect'
+	implementation 'org.springframework.boot:spring-boot-starter-webflux'
+	implementation 'org.springframework.boot:spring-boot-starter-aop'
+	implementation 'io.github.resilience4j:resilience4j-spring-boot3'
+
+	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.6.0'
+	developmentOnly 'org.springframework.boot:spring-boot-devtools'
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	testImplementation 'org.jetbrains.kotlin:kotlin-test-junit5'
+	testImplementation 'org.springframework.cloud:spring-cloud-starter-contract-stub-runner'
+	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+
+	intTestImplementation 'org.springframework.boot:spring-boot-starter-test'
+	intTestImplementation 'org.springframework.boot:spring-boot-testcontainers'
+	intTestImplementation 'org.testcontainers:junit-jupiter'
+	intTestImplementation 'com.intuit.karate:karate-junit5:1.4.1'
+	intTestImplementation 'org.flywaydb:flyway-core:10.15.2'
+	intTestImplementation 'io.jsonwebtoken:jjwt:0.9.1'
+	intTestImplementation 'org.testcontainers:elasticsearch:1.20.1'
+
+}
+
+dependencyManagement {
+	imports {
+		mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+	}
+}
+
+kotlin {
+	compilerOptions {
+		freeCompilerArgs.addAll '-Xjsr305=strict'
+	}
+}
+
+tasks.named('test') {
+	useJUnitPlatform()
+}
+
+tasks.register("integrationTest", Test) {
+	group = "verification"
+
+	logging.captureStandardOutput LogLevel.DEBUG
+
+	testClassesDirs = sourceSets.intTest.output.classesDirs
+	classpath = sourceSets.intTest.runtimeClasspath
+	shouldRunAfter test
+
+	useJUnitPlatform()
+
+	testLogging {
+		events = ["PASSED"]
+		showStandardStreams = true
+	}
+}
+
+tasks.register("runMockServer", JavaExec) {
+	description = "Runs Karate Mock Server"
+
+	main("com.intuit.karate.Main")
+	classpath = sourceSets.intTest.runtimeClasspath
+
+	if (project.hasProperty("karateMock")) {
+		args(project.property("karateMock").split(","))
+	}
+	standardOutput = System.out
+	errorOutput = System.out
+}
+
+tasks.register("product_api_model", org.openapitools.generator.gradle.plugin.tasks.GenerateTask) {
+	generatorName.set("spring")
+	inputSpec.set("$rootDir/src/main/resources/open-api/product-search-api.yaml")
+	outputDir.set(project.layout.buildDirectory.dir("generated").get().asFile.path)
+	modelPackage.set("com.peapod.example.resilience.app.http.model")
+
+	configOptions.set([
+			            serializableModel       : "true",
+						openApiNullable         : "false",
+						useSpringBoot3          : "true",
+						dateLibrary             : "legacy",
+						useEnumCaseInsensitive  : "true"
+			])
+}
+
+tasks.register("product_api", org.openapitools.generator.gradle.plugin.tasks.GenerateTask) {
+	generatorName.set("kotlin-spring")
+	inputSpec.set("$rootDir/src/main/resources/open-api/product-search-api.yaml")
+	outputDir.set(project.layout.buildDirectory.dir("generated").get().asFile.path)
+	apiPackage.set("com.peapod.example.resilience.app.http.api")
+	modelPackage.set("com.peapod.example.resilience.app.http.model")
+	configOptions.set([
+			interfaceOnly           : "true",
+			skipDefaultInterface    : "true",
+			useTags                 : "true",
+			useSpringBoot3          : "true"
+	])
+}
+
+compileKotlin.dependsOn("product_api")
