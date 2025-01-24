@@ -53,6 +53,8 @@ The project and its integration tests demonstrate the following:
 
 ### Running the Application Manually
 
+1. **Start the Mock**
+ 
 The product-index mock service can be started via Gradle to test new mocked endpoints or to test this project manually.
 
 Example:
@@ -60,8 +62,32 @@ Example:
 ./gradlew runMockServer -PkarateMock="-m,src/intTest/resources/com/peapod/example/resilience/mocks/product-index.feature,-p,9300"
 ```
 
-Once the mock is running, you cna run the Spring application from your IDE or via Gradle, just set the  
+2. **Start the Spring Application**
+ 
+Once the mock is running, you can run the Spring application from your IDE or via Gradle, just set the  
 `PRODUCT_INDEX_URL` environment variable to the URL of the mock product-index server.
+
+
+3. **Send Requests to the Service**
+ 
+Once the Mock and app are up, you can begin sending requests to the service to either receive a successful response, cause
+an error to be returned from the index, or a cause the index to take a long time to respond. This is all done with the 
+request criteria sent by the client. 
+
+  - `"text":"Error"` - causes the index to return an error
+  - `"text":"Slow"`  - causes the index to return later than the configured slow call duration
+  - `"text":"Product"` - returns a successful response
+
+Below is an example of a request you can send to the service.
+
+```bash
+curl -X "POST" "http://localhost:8080/products/search" \
+     -H 'Content-Type: application/json' \
+     -d $'{
+  "serviceLocationId": 1234,
+  "text": "Error"
+}'
+```
 
 ### Running the Karate test cases
 
@@ -80,7 +106,7 @@ open according to configured thresholds.
 
 While the Resilience4j Retry can be used in conjunction with the CircuitBreaker, it is recommended to return to the client
 upon the first timeout or error. You will need to consider the performance requirements of your service endpoint and determine
-the additional latency of a retry is acceptable.
+if the additional latency of a retry is acceptable.
 
 ### Circuit Breakers and Fallback Functions
 

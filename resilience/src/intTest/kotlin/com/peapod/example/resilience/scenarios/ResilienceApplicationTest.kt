@@ -23,7 +23,6 @@ class ResilienceApplicationTest {
     @Karate.Test
     fun testProductApiResilienceWithIndexErroring() : Karate {
         return setupKarate(localServerPort, "classpath:com/peapod/example/resilience/scenarios/product-api-resilience.feature")
-            //.tags("@scenario-force-open-and-recover")
     }
 
     private fun setupKarate(serverPort: String, vararg paths: String): Karate {
