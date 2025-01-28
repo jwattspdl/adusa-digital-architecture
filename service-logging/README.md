@@ -128,7 +128,7 @@ Run with the default profile, which will include the `FILE` appender.
 ```
 After the run, there will be an `application.[date-time].log` file(s) in this project directory. 
 
-To run with the `container` profile, which will not produce a file. use the following command.
+To run with the `container` profile, which will not create a log file, use the following command.
 
 ```bash
  ./gradlew bootRun --args='--spring.profiles.active=container'
